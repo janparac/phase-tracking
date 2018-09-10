@@ -86,7 +86,6 @@ plot(funphi,'g',label="phi")
 #xlim(0,150)
 #ylabel(("delta(n)", "theta"),fontsize=12,color='r')
 legend()
-fig1.show()
 
 u = np.linspace(0, 2 * np.pi, 100)
 v = np.linspace(0, np.pi, 100)
@@ -101,7 +100,7 @@ ax = fig2.gca(projection='3d') #get current axis
 ax.scatter(Sq,Su,Sv,s=1)
 ax.set_axis_off()
 ax.plot_surface(x, y, z, color='grey',alpha=0.3)
-fig2.show()
+show()
 
 
 

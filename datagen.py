@@ -33,7 +33,7 @@ def fibmod(delta,theta,phi):
 
 t,rex,imx,rey,imy=[],[],[],[],[]
 
-for i in arange(100000):
+for i in arange(len(points)):
 	Eout=fibmod(fundel(i),funthe(i),funphi(i))
 	rex.append(Eout[0].real)
 	imx.append(Eout[0].imag)
@@ -68,6 +68,6 @@ plot(funphi(points),'g',label="phi")
 #ylabel(("delta(n)", "theta"),fontsize=12,color='r')
 grid()
 legend()
-fig1.show()
+show()
 input()
 
