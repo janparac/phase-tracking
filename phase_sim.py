@@ -1,4 +1,5 @@
-
+################  PARAMETER RECOVERY ######################
+############# from simulated data #########################
 
 from pylab import *
 import sympy as sm # many conflicts with pylab, numpy,math,...
@@ -20,7 +21,7 @@ t,rex,imx,rey,imy=genfromtxt("eout.csv",delimiter='\t',unpack='True')
 
 
 
-####----phases plotting----###########
+####----phases plotting (in need be)----###########
 
 if phase_plot_mode :
 
@@ -31,15 +32,18 @@ if phase_plot_mode :
 	plot(rey,label='rey')
 	plot(imy,label='imy')
 
-#
+
 ########################################
 ######## DSP ALGORITHM         #########
 ########################################
 
 
 #### W Matrix creation ########
+#### Symbolic calculation #####
 
 delta, theta,phi=sm.symbols("delta theta phi", real=True)
+
+##### implementation of Eo= R*M*R*Ein
 
 R1=sm.Matrix([[sm.cos(theta),sm.sin(theta)],[-sm.sin(theta),sm.cos(theta)]])
 M=sm.Matrix([[sm.exp(sm.I*(-delta/2)),0],[0,sm.exp(sm.I*(delta/2))]])
@@ -71,19 +75,22 @@ Fun=sm.lambdify((delta,theta,phi),sm.transpose(vec),'numpy')
 
 ##### declaration section ###########
 
-B=array([[0.5],[0.5],[0.5]])
-deB=array([[0],[0],[0]])
-Yt=array([[0],[0],[0],[0]])
-mod=1
-deY=array([[0],[0],[0],[0]])
-B1=[]
-B2=[]
-B3=[]
-dell=[]
-thel=[]
-phil=[]
+#### fundamental variables ##########
 
-detl=[]
+B=array([[0.5],[0.5],[0.5]]) # Beta-point
+deB=array([[0],[0],[0]]) # Beta-increment
+Yt=array([[0],[0],[0],[0]]) # 4 values of the coherent receiver 
+mod=1 # module of the Y vector
+deY=array([[0],[0],[0],[0]]) 
+B1=[] # auxiliary list
+B2=[] # auxiliary list
+B3=[] # auxiliary list
+dell=[] #retrieved delta
+thel=[] # retrieved theta
+phil=[] # tetreived phi
+detl=[] # determinat of (tW*W)
+
+###### discontinuity overcome variables#######
 
 phibe=zeros(2)#phase buffer for even discon (array)
 phibune=[0,0]#phase buffer for even discon unwrapped (list)
@@ -91,7 +98,6 @@ phiexe=[] #exact phi even discon(direct mode)
 phibo=zeros(2)
 phibuno=[0,0]
 phiexo=[]
-
 deBb=[0,0] # buffer for delta increments in discon
 
 def myY(t):
@@ -101,13 +107,13 @@ def myY(t):
 def modx(x):
 	b=sqrt(rex[x]**2 + imx[x]**2 + rey[x]**2 + imy[x]**2)
 	return b
-	
+###################################################	
 
+######### loop section ###############
 
 print ("start loop")
 t1=time.time()
 
-######### loop section ###############
 
 for i in range(len(rex)):
 
@@ -115,6 +121,7 @@ for i in range(len(rex)):
 	mod= modx(i)
 	deY=(myY(i)/mod)-Yt
 	
+    ###### direct method calculation #####
 	phasee=arctan(imy[i]/rey[i]) #phase at even discon
 	phaseo=2*B[1,0]-arctan(rey[i]/imy[i])  #phase at odd discon
 	phibe[1]=phasee
@@ -132,13 +139,13 @@ for i in range(len(rex)):
 	phibe[0]=phibune[1]
 	phibo[0]=phibuno[1]
 	
+    #### LSM matrixes calculation####
 	Wn=Wt(B[0,0],B[1,0],B[2,0])
-
 	u=Prodv(B[0,0],B[1,0],B[2,0])
-	
 	d=linalg.det(u)
 	detl.append(d)
 	
+    ###### discontuinties section ######
 	if d>10**(-7): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
 		uu=inv(u)
 		deB=uu.dot(Wn).dot(deY)
@@ -158,7 +165,8 @@ for i in range(len(rex)):
 	deBb[0]=deBb[1]
 	deBb[1]=deB[0,0]
 
-
+    #########################
+    #### increments addition
 	B=B+deB
 	
 	B1=B[0,0].tolist()

@@ -1,11 +1,10 @@
-
+############# SIMULATOR OF THE COHERENT RECEIVER CHANNELS ############
+####         for deterministic functions for delta, theta, phi   #####  
 
 
 from numpy import *
 from matplotlib.pyplot import *
 import csv
-
-
 
 ###########----entries----###########
 def fundel(n):
@@ -19,6 +18,9 @@ def funphi(n):
 
 points=arange(100000)
 
+###########---end entries----########
+
+### jordan matrix model R(-t)M(d)R(t)
 def fibmod(delta,theta,phi):
 	R1=array([[cos(theta),sin(theta)],[-sin(theta),cos(theta)]])
 	M=array([[e**(1j*(-delta/2)),0],[0,e**(1j*(delta/2))]])
@@ -31,7 +33,7 @@ def fibmod(delta,theta,phi):
 
 t,rex,imx,rey,imy=[],[],[],[],[]
 
-for i in range(1, len(points)+1):
+for i in arange(100000):
 	Eout=fibmod(fundel(i),funthe(i),funphi(i))
 	rex.append(Eout[0].real)
 	imx.append(Eout[0].imag)

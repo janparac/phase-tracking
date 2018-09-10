@@ -1,4 +1,6 @@
 
+############# SIMULATOR OF THE COHERENT RECEIVER CHANNELS ############
+####         with random-walk functions for delta, theta, phi   #####  
 
 
 from numpy import *
@@ -7,16 +9,12 @@ from matplotlib.pyplot import *
 from mpl_toolkits.mplot3d import Axes3D
 import csv
 
-#################################################
-
-
-
 #####################################
 ###########----entries----###########
 
 points=arange(100000)
 
-
+###########----end entries---########
 
 def randomwalk(p):
 	x=[0]
@@ -34,7 +32,7 @@ funphi=randomwalk(len(points))
 	
 
 
-
+### jordan matrix model R(-t)M(d)R(t)
 def fibmod(delta,theta,phi):
 	R1=array([[cos(theta),sin(theta)],[-sin(theta),cos(theta)]])
 	M=array([[e**(1j*(-delta/2)),0],[0,e**(1j*(delta/2))]])
