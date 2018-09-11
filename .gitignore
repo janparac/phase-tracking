@@ -1,3 +1,7 @@
 # all csv files
 
 *.csv
+
+# cash file for custom module
+
+*__
