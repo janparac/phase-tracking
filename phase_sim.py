@@ -214,7 +214,6 @@ plot(residual,color='green')
 grid()
 show()
 
-input()
 	
 
 

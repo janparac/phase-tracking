@@ -20,5 +20,5 @@ def funthe(n):
 def funphi(n):
 	return 1.5+1*cos(2*pi*10*(4*10**(-7))*n)
 
-dg.datagen(fundel, funthe, funphi, mypoints,0)
+dg.datagen(fundel, funthe, funphi, mypoints,1)
 

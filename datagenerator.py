@@ -48,7 +48,7 @@ def datagen(fundel,funthe,funphi, points,sphere):
 
 		Sq.append(Exr**2 + Exi**2 - Eyr**2 - Eyi**2)
 		Su.append(2*(Exr*Eyr + Exi*Eyi))
-		Sv.append(2*(Exi*Eyr + Exr*Eyi))
+		Sv.append(2*(Exi*Eyr - Exr*Eyi))
 
 
 	###########writing file################
@@ -85,10 +85,11 @@ def datagen(fundel,funthe,funphi, points,sphere):
 
 
 		fig2=figure()
-		ax = fig2.gca(projection='3d') #get current axis
+		ax = fig2.add_subplot(111, projection='3d')
+		 #get current axis
 		ax.scatter(Sq,Su,Sv,s=1)
-		ax.set_axis_off()
-		ax.plot_surface(x, y, z, color='grey',alpha=0.3)
+		#ax.set_axis_off()
+		ax.plot_surface(x, y, z, rstride=4, cstride=4, color='grey',alpha=0.3)
 	show()
 
 
