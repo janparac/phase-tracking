@@ -90,6 +90,6 @@ def datagen(fundel,funthe,funphi, points,sphere):
 		ax.scatter(Sq,Su,Sv,s=1)
 		#ax.set_axis_off()
 		ax.plot_surface(x, y, z, rstride=4, cstride=4, color='grey',alpha=0.3)
-	show()
+	show()# ciaociaociao
 
 
