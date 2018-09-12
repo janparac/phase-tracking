@@ -8,6 +8,7 @@
 from numpy import *
 import csv
 from matplotlib.pyplot import *
+matplotlib.use("TkAgg") #setting Tk ad windows manager
 from mpl_toolkits.mplot3d import Axes3D
 
 def datagen(fundel,funthe,funphi, points,sphere):
@@ -66,30 +67,43 @@ def datagen(fundel,funthe,funphi, points,sphere):
 
 	####plots of the simulated functions#####
 
-	fig1=figure() #new independent window
-	plot(dellist,'r',label="delta")
-	plot(thelist,'orange', label="theta")
-	plot(philist,'g',label="phi")
-	#yticks(arange(0,7,pi/2),[r"$-\frac{\pi}{2}$", r"$-\frac{\pi}{4}$", r"$0$", r"$+\frac{\pi}{4}$",   r"$+\frac{\pi}{2}$"], fontsize=20)
-	#xlim(0,150)
-	#ylabel(("delta(n)", "theta"),fontsize=12,color='r')
+	fig1=figure(figsize=(6,4),num="Parameters Plot") #new independent window
+	s1=fig1.add_subplot(1,1,1)
+	s1=plot(dellist,'r',label="delta")
+	s1=plot(thelist,'orange', label="theta")
+	s1=plot(philist,'g',label="phi")
 	legend()
-
+	mng1= get_current_fig_manager()
+	mng1.window.wm_geometry("+800+250")
 	if sphere :
 		u = np.linspace(0, 2 * np.pi, 100)
 		v = np.linspace(0, np.pi, 100)
-		x = 1 * np.outer(np.cos(u), np.sin(v))
-		y = 1 * np.outer(np.sin(u), np.sin(v))
-		z = 1 * np.outer(np.ones(np.size(u)), np.cos(v))
+		x = 0.98 * np.outer(np.cos(u), np.sin(v))
+		y = 0.98 * np.outer(np.sin(u), np.sin(v))
+		z = 0.98 * np.outer(np.ones(np.size(u)), np.cos(v))
 
 
 
-		fig2=figure()
-		ax = fig2.add_subplot(111, projection='3d')
-		 #get current axis
-		ax.scatter(Sq,Su,Sv,s=1)
-		#ax.set_axis_off()
-		ax.plot_surface(x, y, z, rstride=4, cstride=4, color='grey',alpha=0.3)
-	show()# ciaociaociao
+		fig2=figure(figsize=(5,3.5),num="Poincare Sphere")
+		ax = Axes3D(fig2)
+		ax.scatter(Sq,Su,Sv,s=0.1)
+		ax.plot_surface(x, y, z, color='grey',alpha=0.8)
+		ax.set_axis_off()
+		ax.set_xlabel('X')
+		ax.set_ylabel('Y')
+		ax.set_zlabel('Z')
+		arrowstyle={'length':2,'arrow_length_ratio':0.05,'color':'black'}
+		ax.quiver3D(0,0,-1.3,0,0,1.3,**arrowstyle)
+		ax.quiver3D(0,-1.3,0,0,1.3,0,**arrowstyle)
+		ax.quiver3D(-1.3,0,0,1.3,0,0,**arrowstyle)
+		labelstyle={'color':'black','weight':'bold'}
+		ax.text(1.4,0,0,"Q",**labelstyle)
+		ax.text(0,1.4,0,"U",**labelstyle)
+		ax.text(0,0,1.4,"V",**labelstyle)
+		mng2= get_current_fig_manager()	
+		mng2.window.wm_geometry("-800+250")
+
+	fig2.show();input()#show() 
+
 
 
