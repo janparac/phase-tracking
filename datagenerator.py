@@ -6,6 +6,7 @@
 
 
 from numpy import *
+import matplotlib.colors
 import csv
 from matplotlib.pyplot import *
 matplotlib.use("TkAgg") #setting Tk ad windows manager
@@ -76,34 +77,34 @@ def datagen(fundel,funthe,funphi, points,sphere):
 	mng1= get_current_fig_manager()
 	mng1.window.wm_geometry("+800+250")
 	if sphere :
-		u = np.linspace(0, 2 * np.pi, 100)
-		v = np.linspace(0, np.pi, 100)
-		x = 0.98 * np.outer(np.cos(u), np.sin(v))
-		y = 0.98 * np.outer(np.sin(u), np.sin(v))
-		z = 0.98 * np.outer(np.ones(np.size(u)), np.cos(v))
+		u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
+		x = 0.98*np.cos(u)*np.sin(v)
+		y = 0.98*np.sin(u)*np.sin(v)
+		z = 0.98*np.cos(v)
 
-
-
-		fig2=figure(figsize=(5,3.5),num="Poincare Sphere")
+		fig2=figure(figsize=(6,4),num="Poincare Sphere")
 		ax = Axes3D(fig2)
-		ax.scatter(Sq,Su,Sv,s=0.1)
-		ax.plot_surface(x, y, z, color='grey',alpha=0.8)
-		ax.set_axis_off()
-		ax.set_xlabel('X')
-		ax.set_ylabel('Y')
-		ax.set_zlabel('Z')
 		arrowstyle={'length':2,'arrow_length_ratio':0.05,'color':'black'}
-		ax.quiver3D(0,0,-1.3,0,0,1.3,**arrowstyle)
-		ax.quiver3D(0,-1.3,0,0,1.3,0,**arrowstyle)
-		ax.quiver3D(-1.3,0,0,1.3,0,0,**arrowstyle)
+		ax.quiver(0,0,-1.3,0,0,1.3,**arrowstyle)
+		ax.quiver(0,-1.3,0,0,1.3,0,**arrowstyle)
+		ax.quiver(-1.3,0,0,1.3,0,0,**arrowstyle)
 		labelstyle={'color':'black','weight':'bold'}
 		ax.text(1.4,0,0,"Q",**labelstyle)
 		ax.text(0,1.4,0,"U",**labelstyle)
 		ax.text(0,0,1.4,"V",**labelstyle)
+		#ax.plot_wireframe(x, y, z, color="r")
+
+		cmap = cm.rainbow
+		norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+
+		ax.scatter(Sq,Su,Sv,s=1,c=cmap(norm(linspace(0,1,points))))
+		ax.set_axis_off()
+		
+
 		mng2= get_current_fig_manager()	
 		mng2.window.wm_geometry("-800+250")
 
-	fig2.show();input()#show() 
+	show() 
 
 
 
