@@ -193,7 +193,7 @@ phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
 residual=array(phior)-roll(array(phil),0)
 
 f1=figure()
-plot(dell,color='r', label='delta') #linestyle='--', marker='o')
+plot(dell,color='r', label='delta',linestyle='--', marker='o')
 plot(thel,color='orange', label='theta')
 plot(phil,color='green', label='phi')
 
