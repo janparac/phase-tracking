@@ -28,8 +28,7 @@ def datagen(fundel,funthe,funphi, points,sphere):
 	t,rex,imx,rey,imy,Sq,Su,Sv,dellist,thelist,philist=[],[],[],[],[],[],[],[],[],[],[]
 	dd,pp,tt=0,0,0
 
-	print ("start loop")
-	t1=time.time()
+
 
 	for i in arange(points):
 		dd=fundel(i)
@@ -55,8 +54,6 @@ def datagen(fundel,funthe,funphi, points,sphere):
 		Su.append(2*(Exr*Eyr + Exi*Eyi))
 		Sv.append(2*(Exi*Eyr - Exr*Eyi))
 
-	print("loop finished")
-	print("elapsed time: ",time.time()-t1)
 	###########writing file################
 	outlist=list(zip(t,rex,imx,rey,imy))
 	f=open("eout.csv",'w')

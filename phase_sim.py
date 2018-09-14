@@ -89,6 +89,9 @@ dell=[] #retrieved delta
 thel=[] # retrieved theta
 phil=[] # tetreived phi
 detl=[] # determinat of (tW*W)
+sigdel=[]
+sigthe=[]
+sigphi=[]
 
 ###### discontinuity overcome variables#######
 
@@ -146,7 +149,7 @@ for i in range(len(rex)):
 	detl.append(d)
 	
     ###### discontuinties section ######
-	if d>10**(-7): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
+	if d>10**(-6): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
 		uu=inv(u)
 		deB=uu.dot(Wn).dot(deY)
 	else: # det close to zero: altern method	
@@ -172,11 +175,13 @@ for i in range(len(rex)):
 	B1=B[0,0].tolist()
 	B2=B[1,0].tolist()
 	B3=B[2,0].tolist()
-	
-	
 	dell.append(B1)
 	thel.append(B2)
 	phil.append(B3)
+
+	sigdel.append(uu[0,0])
+	sigthe.append(uu[1,1])
+	sigphi.append(uu[2,2])
 	
 	Yt=Fun(B[0,0],B[1,0],B[2,0])
 	
@@ -193,25 +198,34 @@ phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
 residual=array(phior)-roll(array(phil),0)
 
 f1=figure()
-plot(dell,color='r', label='delta',linestyle='--', marker='o')
-plot(thel,color='orange', label='theta')
-plot(phil,color='green', label='phi')
+ax1=f1.add_subplot(1,1,1)
+ax1.plot(dell,color=(1,0,0), label='delta')#,linestyle='--', marker='o')
+ax1.plot(thel,color=(1,0.65,0), label='theta')
+ax1.plot(phil,color=(0,1,0), label='phi')
+ax12=ax1.twinx()
+ax12.plot(sigdel,color=(0.6,0,0), label='sigdel')
+ax12.plot(sigthe,color=(0.8,0.45,0), label='sigthe')
+ax12.plot(sigphi,color=(0,0.5,0), label='sigphi')
+ax1.legend(loc=2)
+ax12.legend(loc=1)
+ax1.grid()
 
 if direct_plot_mode :
 	phiexare=array(phiexe)
 	phiexaro=array(phiexo)
-	plot(detl,color='black',linestyle='dashed')
-	plot(phiexare,color='blue',linestyle='dashed')
-	plot(phiexaro,color='pink',linestyle='dashed')
+	ax1.plot(detl,color='black',linestyle='dashed')
+	ax1.plot(phiexare,color='blue',linestyle='dashed')
+	ax1.plot(phiexaro,color='pink',linestyle='dashed')
 #yticks([3.14*n for n in arange(-5,5)])
-grid()
-legend()
+
 
 
 f2=figure()
-title("Residual")
-plot(residual,color='green')
-grid()
+ax2=f2.add_subplot(1,1,1)
+ax2.set_title("Residual")
+ax2.plot(residual,color='green')
+ax2.grid()
+
 show()
 
 	
