@@ -13,3 +13,8 @@ Just 4 instructions on an administrator privileged CMD:
 
 > pip install numpy matplotlib sympy scipy
 ```
+### Test Run with:
+
+```
+>python FUNDEF_rand.py
+```
