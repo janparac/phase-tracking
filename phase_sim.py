@@ -93,15 +93,6 @@ sigdel=[]
 sigthe=[]
 sigphi=[]
 
-###### discontinuity overcome variables#######
-
-phibe=zeros(2)#phase buffer for even discon (array)
-phibune=[0,0]#phase buffer for even discon unwrapped (list)
-phiexe=[] #exact phi even discon(direct mode)
-phibo=zeros(2)
-phibuno=[0,0]
-phiexo=[]
-deBb=[0,0] # buffer for delta increments in discon
 
 def myY(t):
 	a=array([[rex[t]],[imx[t]],[rey[t]],[imy[t]]])
@@ -124,52 +115,21 @@ for i in range(len(rex)):
 	mod= modx(i)
 	deY=(myY(i)/mod)-Yt
 	
-    ###### direct method calculation #####
-	phasee=arctan(imy[i]/rey[i]) #phase at even discon
-	phaseo=2*B[1,0]-arctan(rey[i]/imy[i])  #phase at odd discon
-	phibe[1]=phasee
-	phibo[1]=phaseo
-	phibune=unwrap(phibe*2)/2
-	phibuno=unwrap(phibo*2)/2	
-	de=phibune[1]-B[2,0]
-	do=phibuno[1]-B[2,0]
-	if abs(de)>(pi/4):
-		phibune[1]-=trunc(de/(pi/4))*(pi/4)
-	if abs(do)>(pi/4):
-		phibuno[1]-=trunc(do/(pi/4))*(pi/4)
-	phiexe.append(phibune[1])
-	phiexo.append(phibuno[1])
-	phibe[0]=phibune[1]
-	phibo[0]=phibuno[1]
+
 	
     #### LSM matrixes calculation####
 	Wn=Wt(B[0,0],B[1,0],B[2,0])
 	u=Prodv(B[0,0],B[1,0],B[2,0])
 	d=linalg.det(u)
-	detl.append(d)
+	detl.append(1/d)
 	
-    ###### discontuinties section ######
-	if d>10**(-6): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
-		uu=inv(u)
-		deB=uu.dot(Wn).dot(deY)
-	else: # det close to zero: altern method	
-		print("det!!",i,' : ',deB[0,0])
-		if abs(deBb[0]*deBb[1]<0):
-			print ("----reverse----")
-			deB[0,0]=deB[0,0]*0.1
 
-		deB[1,0]=0
+	uu=inv(u)
+	sigd=uu[0,0]
+	sigt=uu[1,1]
+	sigp=uu[2,2]
+	deB=uu.dot(Wn).dot(deY)
 
-		if round(asscalar(B[0,0])/pi) & 1: #bitwise operat to check even/odd
-			deB[2,0]=(phibuno[1])-B[2,0]
-		else :
-			deB[2,0]=(phibune[1])-B[2,0]
-
-	deBb[0]=deBb[1]
-	deBb[1]=deB[0,0]
-
-    #########################
-    #### increments addition
 	B=B+deB
 	
 	B1=B[0,0].tolist()
@@ -179,9 +139,9 @@ for i in range(len(rex)):
 	thel.append(B2)
 	phil.append(B3)
 
-	sigdel.append(uu[0,0])
-	sigthe.append(uu[1,1])
-	sigphi.append(uu[2,2])
+	sigdel.append(sigd)
+	sigthe.append(sigt)
+	sigphi.append(sigp)
 	
 	Yt=Fun(B[0,0],B[1,0],B[2,0])
 	
@@ -195,7 +155,7 @@ print("elapsed time: ",time.time()-t1)
 ########### plot section ##################
 
 phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
-residual=array(phior)-roll(array(phil),0)
+#residual=array(phior)-roll(array(phil),0)
 
 f1=figure()
 ax1=f1.add_subplot(1,1,1)
@@ -206,8 +166,13 @@ ax12=ax1.twinx()
 ax12.plot(sigdel,color=(0.6,0,0), label='sigdel')
 ax12.plot(sigthe,color=(0.8,0.45,0), label='sigthe')
 ax12.plot(sigphi,color=(0,0.5,0), label='sigphi')
+ax12.plot(detl,color=(0,0,0), label='determ')
 ax1.legend(loc=2)
+ax1.set_ylabel("phase (rad)")
 ax12.legend(loc=1)
+ax12.set_ylabel("relative variance (rad/V^2)")
+ax12.ticklabel_format(style='sci', axis='y', scilimits=(0,0),useMathText = True)
+#ax12.yaxis.major.formatter._useMathText = True
 ax1.grid()
 
 if direct_plot_mode :
@@ -220,11 +185,11 @@ if direct_plot_mode :
 
 
 
-f2=figure()
-ax2=f2.add_subplot(1,1,1)
-ax2.set_title("Residual")
-ax2.plot(residual,color='green')
-ax2.grid()
+#f2=figure()
+#ax2=f2.add_subplot(1,1,1)
+#ax2.set_title("Residual")
+#ax2.plot(residual,color='green')
+#sax2.grid()
 
 show()
 
