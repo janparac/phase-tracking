@@ -93,6 +93,15 @@ sigdel=[]
 sigthe=[]
 sigphi=[]
 
+#weighted average
+theb=array([B[1,0]])
+phib=array([B[2,0]])
+them=theb[0]
+phim=phib[0]
+l=5
+thew=them
+phiw=phim
+
 
 def myY(t):
 	a=array([[rex[t]],[imx[t]],[rey[t]],[imy[t]]])
@@ -109,7 +118,7 @@ print ("start loop")
 t1=time.time()
 
 
-for i in range(len(rex)):
+for i in range(2000):
 
 	
 	mod= modx(i)
@@ -132,18 +141,35 @@ for i in range(len(rex)):
 
 	B=B+deB
 	
-	B1=B[0,0].tolist()
-	B2=B[1,0].tolist()
-	B3=B[2,0].tolist()
+	lt=theb.size
+	them=theb.sum()/lt
+	phim=phib.sum()/lt
+
+	thew=(B[1,0]*sigt + them*1)/(sigt+1)
+	phiw=(B[2,0]*sigp + phim*1)/(sigp+1)
+	
+	if lt==l :
+		
+		theb[0:l-1]=theb[1:(l)]
+		theb[4]=thew
+		phib[0:l-1]=phib[1:(l)]
+		phib[4]=phiw
+	else :
+		theb=append(theb,thew)
+		phib=append(phib,phiw)
+		
+	B1=B[0,0]
+	B2=thew
+	B3=phiw
+
 	dell.append(B1)
 	thel.append(B2)
 	phil.append(B3)
-
 	sigdel.append(sigd)
 	sigthe.append(sigt)
 	sigphi.append(sigp)
 	
-	Yt=Fun(B[0,0],B[1,0],B[2,0])
+	Yt=Fun(B1,B2,B3)
 	
 	
 print("loop finished")
