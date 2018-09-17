@@ -77,7 +77,7 @@ Fun=sm.lambdify((delta,theta,phi),sm.transpose(vec),'numpy')
 
 #### fundamental variables ##########
 
-B=array([[0.5],[0.5],[0.5]]) # Beta-point
+B=array([[0.5],[0.1],[0.1]]) # Beta-point
 deB=array([[0],[0],[0]]) # Beta-increment
 Yt=array([[0],[0],[0],[0]]) # 4 values of the coherent receiver 
 mod=1 # module of the Y vector
@@ -98,7 +98,7 @@ theb=array([B[1,0]])
 phib=array([B[2,0]])
 them=theb[0]
 phim=phib[0]
-l=5
+l=3
 thew=them
 phiw=phim
 
@@ -118,7 +118,7 @@ print ("start loop")
 t1=time.time()
 
 
-for i in range(2000):
+for i in range(30):
 
 	
 	mod= modx(i)
@@ -151,9 +151,9 @@ for i in range(2000):
 	if lt==l :
 		
 		theb[0:l-1]=theb[1:(l)]
-		theb[4]=thew
+		theb[l-1]=thew
 		phib[0:l-1]=phib[1:(l)]
-		phib[4]=phiw
+		phib[l-1]=phiw
 	else :
 		theb=append(theb,thew)
 		phib=append(phib,phiw)
@@ -162,6 +162,7 @@ for i in range(2000):
 	B2=thew
 	B3=phiw
 
+	print("the medio:",them,"thew:",thew)
 	dell.append(B1)
 	thel.append(B2)
 	phil.append(B3)
