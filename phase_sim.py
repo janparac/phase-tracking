@@ -169,14 +169,9 @@ for i in range(len(rex)):
     #### increments addition
 	B=B+deB
 	
-	B1=B[0,0].tolist()
-	B2=B[1,0].tolist()
-	B3=B[2,0].tolist()
-	
-	
-	dell.append(B1)
-	thel.append(B2)
-	phil.append(B3)
+	dell.append(B[0,0])
+	thel.append(B[1,0])
+	phil.append(B[2,0])
 	
 	Yt=Fun(B[0,0],B[1,0],B[2,0])
 	
@@ -192,26 +187,31 @@ print("elapsed time: ",time.time()-t1)
 phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
 residual=array(phior)-roll(array(phil),0)
 
-f1=figure()
-plot(dell,color='r', label='delta') #linestyle='--', marker='o')
-plot(thel,color='orange', label='theta')
-plot(phil,color='green', label='phi')
+f1=figure(num="Recovered Parameters")
+s1=f1.add_subplot(111)
+s2.set_title("Recovered Parameters")
+s1.plot(dell,color='r', label='delta') #linestyle='--', marker='o')
+s1.plot(thel,color='orange', label='theta')
+s1.plot(phil,color='green', label='phi')
+s1.grid()
 
 if direct_plot_mode :
 	phiexare=array(phiexe)
 	phiexaro=array(phiexo)
-	plot(detl,color='black',linestyle='dashed')
-	plot(phiexare,color='blue',linestyle='dashed')
-	plot(phiexaro,color='pink',linestyle='dashed')
+	s1.plot(detl,color='black',linestyle='dashed')
+	s1.plot(phiexare,color='blue',linestyle='dashed')
+	s1.plot(phiexaro,color='pink',linestyle='dashed')
 #yticks([3.14*n for n in arange(-5,5)])
 grid()
 legend()
 
 
-f2=figure()
-title("Residual")
-plot(residual,color='green')
-grid()
+f2=figure(num="Residual")
+s2=f2.add_subplot(111)
+s2.set_title("Residual")
+s2.plot(residual,color='green')
+s2.grid()
+
 show()
 
 	
