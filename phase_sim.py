@@ -11,6 +11,7 @@ import time
 
 direct_plot_mode=0
 phase_plot_mode=0
+plot_details=0
 
 
 #####----reading data------#################
@@ -118,7 +119,7 @@ print ("start loop")
 t1=time.time()
 
 
-for i in range(30):
+for i in range(len(rex)):
 
 	
 	mod= modx(i)
@@ -145,8 +146,8 @@ for i in range(30):
 	them=theb.sum()/lt
 	phim=phib.sum()/lt
 
-	thew=(B[1,0]*sigt + them*1)/(sigt+1)
-	phiw=(B[2,0]*sigp + phim*1)/(sigp+1)
+	thew=(B[1,0]*sigt + them*10)/(sigt+10)
+	phiw=(B[2,0]*sigp + phim*10)/(sigp+10)
 	
 	if lt==l :
 		
@@ -162,7 +163,7 @@ for i in range(30):
 	B2=thew
 	B3=phiw
 
-	print("the medio:",them,"thew:",thew)
+	#print("the medio:",them,"thew:",thew)
 	dell.append(B1)
 	thel.append(B2)
 	phil.append(B3)
@@ -189,18 +190,21 @@ ax1=f1.add_subplot(1,1,1)
 ax1.plot(dell,color=(1,0,0), label='delta')#,linestyle='--', marker='o')
 ax1.plot(thel,color=(1,0.65,0), label='theta')
 ax1.plot(phil,color=(0,1,0), label='phi')
-ax12=ax1.twinx()
-ax12.plot(sigdel,color=(0.6,0,0), label='sigdel')
-ax12.plot(sigthe,color=(0.8,0.45,0), label='sigthe')
-ax12.plot(sigphi,color=(0,0.5,0), label='sigphi')
-ax12.plot(detl,color=(0,0,0), label='determ')
 ax1.legend(loc=2)
 ax1.set_ylabel("phase (rad)")
-ax12.legend(loc=1)
-ax12.set_ylabel("relative variance (rad/V^2)")
-ax12.ticklabel_format(style='sci', axis='y', scilimits=(0,0),useMathText = True)
-#ax12.yaxis.major.formatter._useMathText = True
-ax1.grid()
+ax1.grid(linestyle='--')
+
+if plot_details==1 :
+	ax12=ax1.twinx()
+	ax12.plot(sigdel,color=(0.6,0,0), label='sigdel')
+	ax12.plot(sigthe,color=(0.8,0.45,0), label='sigthe')
+	ax12.plot(sigphi,color=(0,0.5,0), label='sigphi')
+	ax12.plot(detl,color=(0,0,0), label='determ')
+	ax12.legend(loc=1)
+	ax12.set_ylabel("variance (rad/V^2)")
+	ax12.ticklabel_format(style='sci', axis='y', scilimits=(0,0),useMathText = True)
+	#ax12.yaxis.major.formatter._useMathText = True
+
 
 if direct_plot_mode :
 	phiexare=array(phiexe)
