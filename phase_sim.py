@@ -146,7 +146,7 @@ for i in range(len(rex)):
 	detl.append(d)
 	
     ###### discontuinties section ######
-	if d>10**(-7): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
+	if d>10**(-5): #det far from zero: LSM. The smaller the value is the closer you can go to the discon point AND the more are the used resources
 		uu=inv(u)
 		deB=uu.dot(Wn).dot(deY)
 	else: # det close to zero: altern method	
@@ -189,7 +189,7 @@ residual=array(phior)-roll(array(phil),0)
 
 f1=figure(num="Recovered Parameters")
 s1=f1.add_subplot(111)
-s2.set_title("Recovered Parameters")
+s1.set_title("Recovered Parameters")
 s1.plot(dell,color='r', label='delta') #linestyle='--', marker='o')
 s1.plot(thel,color='orange', label='theta')
 s1.plot(phil,color='green', label='phi')
