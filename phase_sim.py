@@ -78,7 +78,7 @@ Fun=sm.lambdify((delta,theta,phi),sm.transpose(vec),'numpy')
 
 #### fundamental variables ##########
 
-B=array([[0.5],[0.1],[0.1]]) # Beta-point
+B=array([[1],[2],[2.5]]) # Beta-point
 deB=array([[0],[0],[0]]) # Beta-increment
 Yt=array([[0],[0],[0],[0]]) # 4 values of the coherent receiver 
 mod=1 # module of the Y vector
@@ -95,13 +95,14 @@ sigthe=[]
 sigphi=[]
 
 #weighted average
-theb=array([B[1,0]])
-phib=array([B[2,0]])
-them=theb[0]
-phim=phib[0]
-l=3
+theb=array([])
+phib=array([])
+them=B[1,0]
+phim=B[2,0]
+l=5
 thew=them
 phiw=phim
+theml=[]
 
 
 def myY(t):
@@ -126,8 +127,6 @@ for i in range(len(rex)):
 	deY=(myY(i)/mod)-Yt
 	
 
-	
-    #### LSM matrixes calculation####
 	Wn=Wt(B[0,0],B[1,0],B[2,0])
 	u=Prodv(B[0,0],B[1,0],B[2,0])
 	d=linalg.det(u)
@@ -139,16 +138,10 @@ for i in range(len(rex)):
 	sigt=uu[1,1]
 	sigp=uu[2,2]
 	deB=uu.dot(Wn).dot(deY)
-
+	#print(sigt)
 	B=B+deB
 	
 	lt=theb.size
-	them=theb.sum()/lt
-	phim=phib.sum()/lt
-
-	thew=(B[1,0]*sigt + them*10)/(sigt+10)
-	phiw=(B[2,0]*sigp + phim*10)/(sigp+10)
-	
 	if lt==l :
 		
 		theb[0:l-1]=theb[1:(l)]
@@ -158,7 +151,17 @@ for i in range(len(rex)):
 	else :
 		theb=append(theb,thew)
 		phib=append(phib,phiw)
-		
+	lt=theb.size
+	them=theb.sum()/lt
+	phim=phib.sum()/lt
+	theml.append(them)
+
+	#print("B=",B[1,0],"sigt=",sigt,"them=",them,)
+	sigstar=10**(-2)
+	thew=(B[1,0]*(1/(sigt)) + them*sigstar)/((1/(sigt))+sigstar)
+	phiw=(B[2,0]*(1/(sigp)) + phim*sigstar)/((1/(sigp))+sigstar)
+	#print("thew=",thew)
+
 	B1=B[0,0]
 	B2=thew
 	B3=phiw
@@ -187,9 +190,10 @@ phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
 
 f1=figure()
 ax1=f1.add_subplot(1,1,1)
-ax1.plot(dell,color=(1,0,0), label='delta')#,linestyle='--', marker='o')
+ax1.plot(dell,color=(1,0,0), label='delta')#linestyle='--', marker='o')
 ax1.plot(thel,color=(1,0.65,0), label='theta')
 ax1.plot(phil,color=(0,1,0), label='phi')
+#ax1.plot(theml,color=(0,0.8,0.8), label='them',linestyle='--', marker='o')
 ax1.legend(loc=2)
 ax1.set_ylabel("phase (rad)")
 ax1.grid(linestyle='--')
@@ -201,7 +205,7 @@ if plot_details==1 :
 	ax12.plot(sigphi,color=(0,0.5,0), label='sigphi')
 	ax12.plot(detl,color=(0,0,0), label='determ')
 	ax12.legend(loc=1)
-	ax12.set_ylabel("variance (rad/V^2)")
+	ax12.set_ylabel("param variance (rad^2)")
 	ax12.ticklabel_format(style='sci', axis='y', scilimits=(0,0),useMathText = True)
 	#ax12.yaxis.major.formatter._useMathText = True
 
