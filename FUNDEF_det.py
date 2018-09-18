@@ -12,7 +12,7 @@ import datagenerator as dg
 mypoints=100000
 
 def fundel(n):
-	return -1+6.2832*sin(0.2*pi*2*(20*10**(-7))*n)
+	return 1+1*sin(2*pi*10*(20*10**(-7))*n)
 	
 def funthe(n):
 	return 1+1*cos(2*pi*15*(40*10**(-7))*n)

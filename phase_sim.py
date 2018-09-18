@@ -160,7 +160,7 @@ for i in range(100000):
 	#if 10000<i<15000 :
 	#	print(i,") B=",B[1,0],"sigt=",sigt,"them=",them)
 	#	print("thew=",thew)
-	sigstar=10**(-10)
+	sigstar=10**(-15)
 	thew=(B[1,0]*(1/(sigt)) + them*sigstar)/((1/(sigt))+sigstar)
 	phiw=(B[2,0]*(1/(sigp)) + phim*sigstar)/((1/(sigp))+sigstar)
 	
