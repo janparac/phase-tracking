@@ -12,6 +12,7 @@ import time
 direct_plot_mode=0
 phase_plot_mode=0
 plot_details=0
+residual_plot=1
 
 
 #####----reading data------#################
@@ -99,7 +100,7 @@ theb=array([])
 phib=array([])
 them=B[1,0]
 phim=B[2,0]
-l=5
+l=20
 thew=them
 phiw=phim
 theml=[]
@@ -120,7 +121,7 @@ print ("start loop")
 t1=time.time()
 
 
-for i in range(len(rex)):
+for i in range(100000):
 
 	
 	mod= modx(i)
@@ -155,12 +156,14 @@ for i in range(len(rex)):
 	them=theb.sum()/lt
 	phim=phib.sum()/lt
 	theml.append(them)
-
-	#print("B=",B[1,0],"sigt=",sigt,"them=",them,)
-	sigstar=10**(-2)
+	
+	#if 10000<i<15000 :
+	#	print(i,") B=",B[1,0],"sigt=",sigt,"them=",them)
+	#	print("thew=",thew)
+	sigstar=10**(-10)
 	thew=(B[1,0]*(1/(sigt)) + them*sigstar)/((1/(sigt))+sigstar)
 	phiw=(B[2,0]*(1/(sigp)) + phim*sigstar)/((1/(sigp))+sigstar)
-	#print("thew=",thew)
+	
 
 	B1=B[0,0]
 	B2=thew
@@ -185,8 +188,8 @@ print("elapsed time: ",time.time()-t1)
 
 ########### plot section ##################
 
-phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
-#residual=array(phior)-roll(array(phil),0)
+
+#
 
 f1=figure()
 ax1=f1.add_subplot(1,1,1)
@@ -198,7 +201,7 @@ ax1.legend(loc=2)
 ax1.set_ylabel("phase (rad)")
 ax1.grid(linestyle='--')
 
-if plot_details==1 :
+if plot_details :
 	ax12=ax1.twinx()
 	ax12.plot(sigdel,color=(0.6,0,0), label='sigdel')
 	ax12.plot(sigthe,color=(0.8,0.45,0), label='sigthe')
@@ -219,12 +222,14 @@ if direct_plot_mode :
 #yticks([3.14*n for n in arange(-5,5)])
 
 
-
-#f2=figure()
-#ax2=f2.add_subplot(1,1,1)
-#ax2.set_title("Residual")
-#ax2.plot(residual,color='green')
-#sax2.grid()
+if residual_plot :
+	phior=genfromtxt("phidiff.csv",delimiter='\t',unpack='True')
+	residual=array(phior)-roll(array(phil),0)
+	f2=figure()
+	ax2=f2.add_subplot(1,1,1)
+	ax2.set_title("Residual")
+	ax2.plot(residual,color='green')
+	ax2.grid()
 
 show()
 
