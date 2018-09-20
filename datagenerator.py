@@ -1,8 +1,9 @@
 
 ############# SIMULATOR OF THE COHERENT RECEIVER CHANNELS ############
-####         main function input: 3 functions, 2 integers                    
+####         main function input: 3 functions, 4 bools                    
 #### 			   output: 4-channels data file, parameters plot,
-####				   poincare' sphere 
+####				   parameters file (if activated)
+####				   poincare' sphere (if activated)
 
 
 from numpy import *
@@ -13,48 +14,70 @@ matplotlib.use("TkAgg") #setting Tk ad windows manager
 from mpl_toolkits.mplot3d import Axes3D
 import time
 
-def datagen(fundel,funthe,funphi, points,sphere):
-
-	### jordan matrix model R(-t)M(d)R(t)
-	def fibmod(delta,theta,phi):
-		R1=array([[cos(theta),sin(theta)],[-sin(theta),cos(theta)]])
-		M=array([[e**(1j*(-delta/2)),0],[0,e**(1j*(delta/2))]])
-		R2=transpose(R1)
-		Ein=array([cos(pi/4)*e**(1j*(pi/2)),sin(pi/4)])*e**(1j*(phi))
-		return R2.dot(M.dot(R1.dot(Ein)))
-
-	#####################################
-
-	t,rex,imx,rey,imy,Sq,Su,Sv,dellist,thelist,philist=[],[],[],[],[],[],[],[],[],[],[]
-	dd,pp,tt=0,0,0
+def fibmod(delta,theta,phi):
+	R1=array([[cos(theta),sin(theta)],[-sin(theta),cos(theta)]])
+	M=array([[e**(1j*(-delta/2)),0],[0,e**(1j*(delta/2))]])
+	R2=transpose(R1)
+	Ein=array([cos(pi/4)*e**(1j*(pi/2)),sin(pi/4)])*e**(1j*(phi))
+	return R2.dot(M.dot(R1.dot(Ein)))
 
 
+##### MAIN FUNCTION TO BE IMPORTED #####################
 
-	for i in arange(points):
-		dd=fundel(i)
-		tt=funthe(i)
-		pp=funphi(i)
-		dellist.append(dd)
-		thelist.append(tt)
-		philist.append(pp)
+def datagen(fundel,funthe,funphi, pointval,sphval, pval,sval):
 
-		Eout=fibmod(dd,tt,pp)
-		Exr=Eout[0].real
-		Exi=Eout[0].imag
-		Eyr=Eout[1].real
-		Eyi=Eout[1].imag
-		rex.append(Exr)
-		imx.append(Exi)
-		rey.append(Eyr)
-		imy.append(Eyi)
+	if sval: #show value saved previously
+		plotrecall()
+	else:
 		
-		t.append(i*4*10**(-7))
+		global points,pvalue, svalue,sphere
+		points,pvalue, svalue,sphere=pointval,pval,sval,sphval
+		### jordan matrix model R(-t)M(d)R(t)
 
-		Sq.append(Exr**2 + Exi**2 - Eyr**2 - Eyi**2)
-		Su.append(2*(Exr*Eyr + Exi*Eyi))
-		Sv.append(2*(Exi*Eyr - Exr*Eyi))
 
-	###########writing file################
+		#####################################
+		global t,rex,imx,rey,imy,Sq,Su,Sv,dellist,thelist,philist
+		t,rex,imx,rey,imy,Sq,Su,Sv,dellist,thelist,philist=[],[],[],[],[],[],[],[],[],[],[]
+		dd,pp,tt=0,0,0
+
+
+
+		for i in arange(points):
+			dd=fundel(i)
+			tt=funthe(i)
+			pp=funphi(i)
+			dellist.append(dd)
+			thelist.append(tt)
+			philist.append(pp)
+
+			Eout=fibmod(dd,tt,pp)
+			Exr=Eout[0].real
+			Exi=Eout[0].imag
+			Eyr=Eout[1].real
+			Eyi=Eout[1].imag
+			rex.append(Exr)
+			imx.append(Exi)
+			rey.append(Eyr)
+			imy.append(Eyi)
+			
+			t.append(i*4*10**(-7))
+
+			Sq.append(Exr**2 + Exi**2 - Eyr**2 - Eyi**2)
+			Su.append(2*(Exr*Eyr + Exi*Eyi))
+			Sv.append(2*(Exi*Eyr - Exr*Eyi))
+		
+		writingsection()
+		plottingsection()
+
+
+###################################################
+
+
+
+
+
+###########writing file################
+def writingsection():
 	outlist=list(zip(t,rex,imx,rey,imy))
 	f=open("eout.csv",'w')
 	w=csv.writer(f, delimiter='\t')
@@ -67,16 +90,31 @@ def datagen(fundel,funthe,funphi, points,sphere):
 	w.writerows(outphilist)
 	f2.close()
 
-	####plots of the simulated functions#####
+	if pvalue: # |print-value|:save parameters data on file (useful if rand function)
+		outlist=list(zip(dellist,thelist,philist))
+		f1=open("rand_data.csv",'w')
+		w=csv.writer(f1, delimiter='\t')
+		w.writerows(outlist)
+		f2.close()
 
-	fig1=figure(figsize=(6,4),num="Parameters Plot") #new independent window
-	s1=fig1.add_subplot(1,1,1)
-	s1=plot(dellist,'r',label="delta")
-	s1=plot(thelist,'orange', label="theta")
-	s1=plot(philist,'g',label="phi")
-	legend()
-	mng1= get_current_fig_manager()
-	mng1.window.wm_geometry("+800+250")
+
+
+####plots of the simulated functions#####
+
+
+def plotrecall():
+	try:
+		delrec,therec,phirec=genfromtxt("rand_data.csv",delimiter='\t',unpack='True')
+		plotparam(delrec,therec, phirec)
+		show()
+	except IOError:
+		print("Exception: File rand_data.csv not found in the wd")
+
+
+def plottingsection():
+	
+	plotparam(dellist,thelist, philist)
+
 	if sphere :
 		u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
 		x = 0.98*np.cos(u)*np.sin(v)
@@ -107,5 +145,16 @@ def datagen(fundel,funthe,funphi, points,sphere):
 
 	show() 
 
+
+def plotparam(delin, thein, phiin):
+
+	fig1=figure(figsize=(6,4),num="Parameters Plot") #new independent window
+	s1=fig1.add_subplot(1,1,1)
+	s1=plot(delin,'r',label="delta")
+	s1=plot(thein,'orange', label="theta")
+	s1=plot(phiin,'g',label="phi")
+	legend()
+	mng1= get_current_fig_manager()
+	mng1.window.wm_geometry("+800+250")
 
 
