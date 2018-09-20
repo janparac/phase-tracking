@@ -12,13 +12,13 @@ import datagenerator as dg
 mypoints=100000
 
 def fundel(n):
-	return 1+5.2832*sin(2*pi*20*(4*10**(-7))*n)
+	return 1+1*sin(2*pi*10*(20*10**(-7))*n)
 	
 def funthe(n):
-	return 1+1*cos(2*pi*20*(4*10**(-7))*n)
+	return 1+1*cos(2*pi*15*(40*10**(-7))*n)
 
 def funphi(n):
-	return 1.5+1*cos(2*pi*10*(4*10**(-7))*n)
+	return 1.5+1*cos(2*pi*10*(40*10**(-7))*n)
 
-dg.datagen(fundel, funthe, funphi, mypoints,1)
+dg.datagen(fundel, funthe, funphi, mypoints,1,0,0)
 
