@@ -54,7 +54,7 @@ maxmod=max(Ysmod)
 fvec=(arange(len(S)))*(Fs/len(S)) 
 plot(fvec,Ysmod/maxmod)
 plot(fvec,compare,c=(1,0,0))
-
+loglog()
 print(compare)
 if filtering :
 
